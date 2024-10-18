@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+#  profiles:
+#    active: dev
+  jackson:
+    mapper:
+      accept_case_insensitive_properties: true
+  application:
+    name: catalogo-produtos
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/produtosdb?currentSchema=public}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:password}
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always

@@ -1,0 +1,46 @@
+version: '3.8'
+name: catalogo-produtos
+
+services:
+  postgres:
+    container_name: produtosdb
+    image: postgres:latest
+    command: postgres -c 'max_connections=600'
+    user: postgres
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_DB: produtosdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+  springboot:
+    image: catalogo-produtos-api
+    container_name: produtos-api
+    build:
+      context: ./catalogo-produtos-api
+    ports:
+      - "9000:8080"
+#    environment:
+#      - "SPRING_PROFILES_ACTIVE=dev"
+    depends_on:
+      - postgres
+  angular:
+    image: catalogo-produtos-ui
+    container_name: produtos-ui
+    build:
+      context: ./catalogo-produtos-ui
+    ports:
+      - "4200:80"
+    depends_on:
+      - springboot
+
+volumes:
+  sql-data:
